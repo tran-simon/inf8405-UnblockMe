@@ -12,7 +12,7 @@ class AndroidLauncher : AndroidApplication() {
 
         val config = AndroidApplicationConfiguration()
 
-        val layout = findViewById<ConstraintLayout>(R.id.root_layout)
+        val layout = findViewById<ConstraintLayout>(R.id.layout_game)
         layout.addView(initializeForView(UnblockMe(), config))
     }
 }

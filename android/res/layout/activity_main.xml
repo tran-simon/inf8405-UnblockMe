@@ -7,15 +7,15 @@
         tools:context=".MainActivity">
 
     <Button
-            android:text="Button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/button"
+            android:id="@+id/button_play"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginStart="32dp"
             android:layout_marginEnd="32dp"
-            android:onClick="startGame" />
+            android:onClick="startGame"
+            android:text="@string/btn_play" />
 </android.support.constraint.ConstraintLayout>

@@ -1,4 +1,4 @@
-package com.inf8405.tp1
+package com.inf8405.tp1.view
 
 import com.badlogic.gdx.ApplicationAdapter
 import com.badlogic.gdx.graphics.Texture

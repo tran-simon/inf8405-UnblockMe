@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.constraint.ConstraintLayout
 import com.badlogic.gdx.backends.android.AndroidApplication
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration
+import com.inf8405.tp1.view.UnblockMe
 
 class AndroidLauncher : AndroidApplication() {
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.support.constraint.ConstraintLayout
 import com.badlogic.gdx.backends.android.AndroidApplication
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration
-import com.inf8405.tp1.view.UnblockMe
+import com.inf8405.tp1.view.GameView
 
 class AndroidLauncher : AndroidApplication() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -14,6 +14,6 @@ class AndroidLauncher : AndroidApplication() {
         val config = AndroidApplicationConfiguration()
 
         val layout = findViewById<ConstraintLayout>(R.id.layout_game)
-        layout.addView(initializeForView(UnblockMe(), config))
+        layout.addView(initializeForView(GameView(), config))
     }
 }

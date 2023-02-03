@@ -1,6 +1,6 @@
 package com.inf8405.tp1.model
 
-import com.inf8405.tp1.model.utils.Vector2D
+import com.inf8405.tp1.model.utils.Vector
 
 enum class Orientation {
     HORIZONTAL, VERTICAL
@@ -13,4 +13,4 @@ enum class Orientation {
  * @param size Size of the piece
  * @param orientation If the piece is horizontal or vertical
  */
-data class GamePiece(val position: Vector2D, val size: Int, val orientation: Orientation = Orientation.HORIZONTAL)
+data class GamePiece(val position: Vector, val size: Int, val orientation: Orientation = Orientation.HORIZONTAL)

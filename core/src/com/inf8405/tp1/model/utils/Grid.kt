@@ -1,24 +1,22 @@
 package com.inf8405.tp1.model.utils
 
-class Grid<T>(private val width: Int, private val height: Int) {
+open class Grid<T>(private val width: Int, private val height: Int) {
     private val grid = MutableList(height) { MutableList<T?>(width) { null } }
 
-    private fun checkBounds(position: Vector2D) {
+    private fun checkBounds(position: Vector) {
         if (position.x < 0 || position.x >= width || position.y < 0 || position.y >= height) {
             throw GridBoundsException(width, height, position)
         }
     }
 
-    fun setAt(position: Vector2D, piece: T?) {
+    fun setAt(position: Vector, piece: T?) {
         checkBounds(position)
-        val (x, y) = position.toIntVector()
-        grid[y][x] = piece
+        grid[position.y][position.x] = piece
     }
 
-    fun getAt(position: Vector2D): T? {
+    fun getAt(position: Vector): T? {
         checkBounds(position)
-        val (x, y) = position.toIntVector()
-        return grid[y][x]
+        return grid[position.y][position.x]
     }
 
     /**
@@ -38,4 +36,4 @@ class Grid<T>(private val width: Int, private val height: Int) {
     }
 }
 
-class GridBoundsException(width: Int, height: Int, point: Vector2D) : Exception("Point $point is out of bounds (width=$width, height=$height)")
+class GridBoundsException(width: Int, height: Int, point: Vector) : Exception("Point $point is out of bounds (width=$width, height=$height)")

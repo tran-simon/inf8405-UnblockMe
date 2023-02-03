@@ -2,26 +2,25 @@ package com.inf8405.tp1.model
 
 import com.badlogic.gdx.Gdx
 import com.inf8405.tp1.model.utils.Grid
-import com.inf8405.tp1.model.utils.Vector2D
+import com.inf8405.tp1.model.utils.Vector
 
 private const val DEFAULT_GRID_WIDTH = 6
 private const val DEFAULT_GRID_HEIGHT = 6
 
-class GameGrid(val width: Int = DEFAULT_GRID_WIDTH, val height: Int = DEFAULT_GRID_HEIGHT) {
-    val pieces = arrayListOf<GamePiece>()
-    private val grid = Grid<GamePiece>(width, height)
+class GameGrid(val width: Int = DEFAULT_GRID_WIDTH, val height: Int = DEFAULT_GRID_HEIGHT): Grid<GamePiece>(width, height) {
+    private val pieces = arrayListOf<GamePiece>()
 
-    private fun getPointsForPiece(piece: GamePiece): Pair<ArrayList<Vector2D>, Boolean> {
-        val points = arrayListOf<Vector2D>()
+    private fun getPointsForPiece(piece: GamePiece): Pair<ArrayList<Vector>, Boolean> {
+        val points = arrayListOf<Vector>()
         var isFree = true
         var (x, y) = piece.position
 
         for (i in 0 until piece.size) {
-            if (grid.getAt(Vector2D(x, y)) != null) {
+            if (getAt(Vector(x, y)) != null) {
                 isFree = false
             }
 
-            points.add(Vector2D(x, y))
+            points.add(Vector(x, y))
 
             if (piece.orientation == Orientation.HORIZONTAL) {
                 x++
@@ -40,7 +39,7 @@ class GameGrid(val width: Int = DEFAULT_GRID_WIDTH, val height: Int = DEFAULT_GR
         }
 
         for (point in points) {
-            grid.setAt(point, piece)
+            setAt(point, piece)
         }
 
         pieces.add(piece)
@@ -56,11 +55,11 @@ class GameGrid(val width: Int = DEFAULT_GRID_WIDTH, val height: Int = DEFAULT_GR
         val (points) = getPointsForPiece(piece)
 
         for (point in points) {
-            grid.setAt(point, null)
+            setAt(point, null)
         }
     }
 
     fun print() {
-        Gdx.app.debug("UnblockMe", grid.toString())
+        Gdx.app.debug("UnblockMe", toString())
     }
 }

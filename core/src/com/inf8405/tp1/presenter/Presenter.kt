@@ -6,14 +6,13 @@ import com.badlogic.gdx.scenes.scene2d.Action
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction
+import com.badlogic.gdx.utils.XmlReader
 import com.inf8405.tp1.model.GameGrid
 import com.inf8405.tp1.model.GamePiece
 import com.inf8405.tp1.model.Orientation
 import com.inf8405.tp1.model.utils.Vector
 import com.inf8405.tp1.view.PieceActor
-import kotlin.math.ceil
-import kotlin.math.floor
-import kotlin.math.round
+import kotlin.math.*
 
 class Presenter(private val stage: Stage) {
     val grid = GameGrid()
@@ -27,9 +26,13 @@ class Presenter(private val stage: Stage) {
     init {
         mainPieceActor = addPiece(GamePiece.createMain())
 
-        // TODO: Remove these test pieces
-        addPiece(GamePiece(Vector(1, 2), 3))
-        addPiece(GamePiece(Vector(4, 2), 3, Orientation.VERTICAL))
+        // TODO: Add more levels
+        val xml = XmlReader()
+        val level = xml.parse(Gdx.files.internal("level1.xml"))
+        val pieces = level.getChildrenByName("piece")
+        for (piece in pieces) {
+            addPiece(GamePiece.fromXmlElement(piece))
+        }
 
         grid.print()
     }
@@ -97,24 +100,32 @@ class Presenter(private val stage: Stage) {
         if (pieceActor != selectedPieceActor) return
 
         val delta = touchPosition.sub(dragStartPosition)
-        val scalarDelta: Float
+        val direction: Float
+        val scale = getScale()
 
         val size = pieceActor.piece.size
         val orientation = pieceActor.piece.orientation
 
         if (orientation == Orientation.HORIZONTAL) {
             delta.y = 0f
-            scalarDelta = delta.x
+            if (delta.x.absoluteValue > scale.x) {
+                delta.x = scale.x * delta.x.sign
+            }
+
+            direction = delta.x.sign
         } else {
             delta.x = 0f
-            scalarDelta = delta.y
+            if (delta.y.absoluteValue > scale.y) {
+                delta.y = scale.y * delta.y.sign
+            }
+            direction = delta.y.sign
         }
 
-        if (scalarDelta == 0f) {
+        if (direction == 0f) {
             return
         }
 
-        val coordinateConversionFunction = if (scalarDelta < 0f) CoordinateConversionFunction.FLOOR else CoordinateConversionFunction.CEIL
+        val coordinateConversionFunction = if (direction < 0f) CoordinateConversionFunction.FLOOR else CoordinateConversionFunction.CEIL
 
         val worldPosition = pieceActor.getPosition()
 

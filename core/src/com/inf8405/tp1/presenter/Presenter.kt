@@ -129,7 +129,7 @@ class Presenter(private val stage: Stage) {
 
         val worldPosition = pieceActor.getPosition()
 
-        val futurePosition = worldPosition.cpy().add(delta) // TODO add only one block
+        val futurePosition = worldPosition.cpy().add(delta)
 
         val futureGridPosition = toGridCoordinates(futurePosition, coordinateConversionFunction)
 

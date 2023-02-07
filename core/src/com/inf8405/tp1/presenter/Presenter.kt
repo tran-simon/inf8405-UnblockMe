@@ -1,7 +1,11 @@
 package com.inf8405.tp1.presenter
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.scenes.scene2d.Action
 import com.badlogic.gdx.scenes.scene2d.Stage
+import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction
+import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction
 import com.inf8405.tp1.model.GameGrid
 import com.inf8405.tp1.model.GamePiece
 import com.inf8405.tp1.model.Orientation
@@ -14,11 +18,14 @@ import kotlin.math.round
 class Presenter(private val stage: Stage) {
     val grid = GameGrid()
 
+    private var mainPieceActor: PieceActor? = null
     private var selectedPieceActor: PieceActor? = null
     private var dragStartPosition: Vector2? = null
 
+    var active: Boolean = true
+
     init {
-        addPiece(GamePiece.createMain())
+        mainPieceActor = addPiece(GamePiece.createMain())
 
         // TODO: Remove these test pieces
         addPiece(GamePiece(Vector(1, 2), 3))
@@ -27,11 +34,13 @@ class Presenter(private val stage: Stage) {
         grid.print()
     }
 
-    private fun addPiece(piece: GamePiece) {
+    private fun addPiece(piece: GamePiece): PieceActor {
         grid.addPiece(piece)
 
         val pieceActor = PieceActor(this, piece)
         stage.addActor(pieceActor)
+
+        return pieceActor
     }
 
     private fun getScale(): Vector2 {
@@ -61,6 +70,7 @@ class Presenter(private val stage: Stage) {
     }
 
     fun selectPieceActor(pieceActor: PieceActor, touchPosition: Vector2) {
+        if(!active) return
         if (selectedPieceActor != null) return
 
         grid.removePiece(pieceActor.piece)
@@ -69,6 +79,7 @@ class Presenter(private val stage: Stage) {
     }
 
     fun unselectPieceActor(pieceActor: PieceActor) {
+        if(!active) return
         if (pieceActor != selectedPieceActor) return
 
         val gridCoordinates = toGridCoordinates(pieceActor.getPosition())
@@ -82,6 +93,7 @@ class Presenter(private val stage: Stage) {
     }
 
     fun movePieceActor(pieceActor: PieceActor, touchPosition: Vector2) {
+        if(!active) return
         if (pieceActor != selectedPieceActor) return
 
         val delta = touchPosition.sub(dragStartPosition)
@@ -120,5 +132,25 @@ class Presenter(private val stage: Stage) {
             val gridPosition = toGridCoordinates(worldPosition, coordinateConversionFunction)
             pieceActor.setPosition(toWorldCoordinates(gridPosition))
         }
+    }
+
+    fun win() {
+        if(!active) return
+
+        active = false
+
+        val moveAction = MoveToAction()
+        val endPosition = toWorldCoordinates(Vector(6, 3))
+        moveAction.setPosition(endPosition.x, endPosition.y)
+        moveAction.duration = 2f
+
+        val completeAction: Action = object : Action() {
+            override fun act(delta: Float): Boolean {
+                // TODO: Move to next puzzle
+                Gdx.app.debug("UnblockMe", "Won")
+                return true
+            }
+        }
+        mainPieceActor!!.addAction(SequenceAction(moveAction, completeAction))
     }
 }

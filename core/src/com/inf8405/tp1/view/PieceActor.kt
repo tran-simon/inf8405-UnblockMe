@@ -1,6 +1,5 @@
 package com.inf8405.tp1.view
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Vector2
@@ -51,11 +50,10 @@ class PieceActor(val presenter: Presenter, val piece: GamePiece) : Actor() {
 
     override fun act(delta: Float) {
         super.act(delta)
-        if (piece.isMain) {
+        if (piece.isMain && presenter.active) {
             val gridPosition = presenter.toGridCoordinates(getPosition(), Presenter.CoordinateConversionFunction.FLOOR)
             if (gridPosition.x + piece.size == presenter.grid.width) {
-                // TODO: Animate main piece exiting the board
-                Gdx.app.debug("UnblockMe", "Won")
+                presenter.win()
             }
         }
     }

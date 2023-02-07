@@ -29,4 +29,8 @@ class GameView : ApplicationAdapter() {
     override fun dispose() {
         stage!!.dispose()
     }
+
+    fun loadLevel(level: Int) {
+        presenter!!.loadLevel(level)
+    }
 }

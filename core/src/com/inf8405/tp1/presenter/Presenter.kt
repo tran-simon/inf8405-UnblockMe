@@ -15,30 +15,41 @@ import com.inf8405.tp1.view.PieceActor
 import kotlin.math.*
 
 class Presenter(private val stage: Stage) {
-    val grid = GameGrid()
+    var grid: GameGrid? = null
 
     private var mainPieceActor: PieceActor? = null
     private var selectedPieceActor: PieceActor? = null
     private var dragStartPosition: Vector2? = null
 
     var active: Boolean = true
+    var moves = 0
 
     init {
+        loadLevel(1)
+    }
+
+    fun loadLevel(level: Int = 1) {
+        // Cleanup stage before loading new level
+        for (actor in stage.actors) {
+            actor.remove()
+        }
+
+        grid = GameGrid()
+        active = true
+        moves = 0
         mainPieceActor = addPiece(GamePiece.createMain())
 
         // TODO: Add more levels
         val xml = XmlReader()
-        val level = xml.parse(Gdx.files.internal("level1.xml"))
-        val pieces = level.getChildrenByName("piece")
+        val xmlRoot = xml.parse(Gdx.files.internal("level$level.xml"))
+        val pieces = xmlRoot.getChildrenByName("piece")
         for (piece in pieces) {
             addPiece(GamePiece.fromXmlElement(piece))
         }
-
-        grid.print()
     }
 
     private fun addPiece(piece: GamePiece): PieceActor {
-        grid.addPiece(piece)
+        grid!!.addPiece(piece)
 
         val pieceActor = PieceActor(this, piece)
         stage.addActor(pieceActor)
@@ -47,7 +58,7 @@ class Presenter(private val stage: Stage) {
     }
 
     private fun getScale(): Vector2 {
-        return Vector2(stage.viewport.worldWidth / grid.width, stage.viewport.worldHeight / grid.height)
+        return Vector2(stage.viewport.worldWidth / grid!!.width, stage.viewport.worldHeight / grid!!.height)
     }
 
     fun toWorldCoordinates(gridCoordinates: Vector): Vector2 {
@@ -73,30 +84,35 @@ class Presenter(private val stage: Stage) {
     }
 
     fun selectPieceActor(pieceActor: PieceActor, touchPosition: Vector2) {
-        if(!active) return
+        if (!active) return
         if (selectedPieceActor != null) return
 
-        grid.removePiece(pieceActor.piece)
+        grid!!.removePiece(pieceActor.piece)
         selectedPieceActor = pieceActor
         dragStartPosition = touchPosition
     }
 
     fun unselectPieceActor(pieceActor: PieceActor) {
-        if(!active) return
+        if (!active) return
         if (pieceActor != selectedPieceActor) return
 
         val gridCoordinates = toGridCoordinates(pieceActor.getPosition())
         val worldCoordinates = toWorldCoordinates(gridCoordinates)
         pieceActor.setPosition(worldCoordinates.x, worldCoordinates.y)
-        pieceActor.piece.position = gridCoordinates
-        grid.addPiece(pieceActor.piece)
+
+        if (gridCoordinates != pieceActor.piece.position) {
+            moves++
+            pieceActor.piece.position = gridCoordinates
+        }
+
+        grid!!.addPiece(pieceActor.piece)
 
         selectedPieceActor = null
         dragStartPosition = null
     }
 
     fun movePieceActor(pieceActor: PieceActor, touchPosition: Vector2) {
-        if(!active) return
+        if (!active) return
         if (pieceActor != selectedPieceActor) return
 
         val delta = touchPosition.sub(dragStartPosition)
@@ -133,7 +149,7 @@ class Presenter(private val stage: Stage) {
 
         val futureGridPosition = toGridCoordinates(futurePosition, coordinateConversionFunction)
 
-        val (_, isFree) = grid.getPointsForPiece(GamePiece(futureGridPosition, size, orientation))
+        val (_, isFree) = grid!!.getPointsForPiece(GamePiece(futureGridPosition, size, orientation))
 
 
         if (isFree) {
@@ -146,7 +162,7 @@ class Presenter(private val stage: Stage) {
     }
 
     fun win() {
-        if(!active) return
+        if (!active) return
 
         active = false
 

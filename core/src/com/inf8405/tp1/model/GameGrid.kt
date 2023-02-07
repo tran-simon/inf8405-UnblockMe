@@ -39,7 +39,7 @@ class GameGrid(val width: Int = DEFAULT_GRID_WIDTH, val height: Int = DEFAULT_GR
     fun addPiece(piece: GamePiece) {
         val (points, free) = getPointsForPiece(piece)
         if (!free) {
-            throw Exception("Failed to add a piece to the grid: position not empty")
+            throw Exception("Failed to add a piece to the grid: position not empty. Piece: $piece")
         }
 
         for (point in points) {

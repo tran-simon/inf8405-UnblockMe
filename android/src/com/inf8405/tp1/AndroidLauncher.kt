@@ -7,6 +7,7 @@ import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration
 import com.inf8405.tp1.view.GameView
 
 class AndroidLauncher : AndroidApplication() {
+    var gameView: GameView? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
@@ -14,6 +15,7 @@ class AndroidLauncher : AndroidApplication() {
         val config = AndroidApplicationConfiguration()
 
         val layout = findViewById<ConstraintLayout>(R.id.layout_game)
-        layout.addView(initializeForView(GameView(), config))
+        gameView = GameView()
+        layout.addView(initializeForView(gameView, config))
     }
 }

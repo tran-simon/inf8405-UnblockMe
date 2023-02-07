@@ -13,4 +13,10 @@ enum class Orientation {
  * @param size Size of the piece
  * @param orientation If the piece is horizontal or vertical
  */
-data class GamePiece(val position: Vector, val size: Int, val orientation: Orientation = Orientation.HORIZONTAL)
+data class GamePiece(var position: Vector, val size: Int, val orientation: Orientation = Orientation.HORIZONTAL, val isMain: Boolean = false) {
+    companion object {
+        fun createMain(): GamePiece {
+            return GamePiece(Vector(0, 3), 2, Orientation.HORIZONTAL, true)
+        }
+    }
+}

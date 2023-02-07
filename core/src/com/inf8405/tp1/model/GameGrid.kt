@@ -2,6 +2,7 @@ package com.inf8405.tp1.model
 
 import com.badlogic.gdx.Gdx
 import com.inf8405.tp1.model.utils.Grid
+import com.inf8405.tp1.model.utils.GridBoundsException
 import com.inf8405.tp1.model.utils.Vector
 
 private const val DEFAULT_GRID_WIDTH = 6
@@ -10,16 +11,19 @@ private const val DEFAULT_GRID_HEIGHT = 6
 class GameGrid(val width: Int = DEFAULT_GRID_WIDTH, val height: Int = DEFAULT_GRID_HEIGHT): Grid<GamePiece>(width, height) {
     private val pieces = arrayListOf<GamePiece>()
 
-    private fun getPointsForPiece(piece: GamePiece): Pair<ArrayList<Vector>, Boolean> {
+    fun getPointsForPiece(piece: GamePiece): Pair<ArrayList<Vector>, Boolean> {
         val points = arrayListOf<Vector>()
         var isFree = true
         var (x, y) = piece.position
 
         for (i in 0 until piece.size) {
-            if (getAt(Vector(x, y)) != null) {
+            try {
+                if (getAt(Vector(x, y)) != null) {
+                    isFree = false
+                }
+            } catch (e: GridBoundsException) {
                 isFree = false
             }
-
             points.add(Vector(x, y))
 
             if (piece.orientation == Orientation.HORIZONTAL) {

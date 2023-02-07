@@ -1,5 +1,6 @@
 package com.inf8405.tp1.view
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Vector2
@@ -12,7 +13,7 @@ import com.inf8405.tp1.model.utils.Vector
 import com.inf8405.tp1.presenter.Presenter
 
 
-class PieceActor(presenter: Presenter, val piece: GamePiece) : Actor() {
+class PieceActor(val presenter: Presenter, val piece: GamePiece) : Actor() {
     private var img: Texture? = null
 
     init {
@@ -46,5 +47,25 @@ class PieceActor(presenter: Presenter, val piece: GamePiece) : Actor() {
     override fun draw(batch: Batch?, parentAlpha: Float) {
         super.draw(batch, parentAlpha)
         batch!!.draw(img, x, y, width, height)
+    }
+
+    override fun act(delta: Float) {
+        super.act(delta)
+        if (piece.isMain) {
+            val gridPosition = presenter.toGridCoordinates(getPosition(), Presenter.CoordinateConversionFunction.FLOOR)
+            if (gridPosition.x + piece.size == presenter.grid.width) {
+                // TODO: Animate main piece exiting the board
+                Gdx.app.debug("UnblockMe", "Won")
+            }
+        }
+    }
+
+    fun getPosition(): Vector2 {
+        return Vector2(x, y)
+    }
+
+    fun setPosition(position: Vector2) {
+        x = position.x
+        y = position.y
     }
 }

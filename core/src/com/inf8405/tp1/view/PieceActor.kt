@@ -52,7 +52,7 @@ class PieceActor(val presenter: Presenter, val piece: GamePiece) : Actor() {
         super.act(delta)
         if (piece.isMain && presenter.active) {
             val gridPosition = presenter.toGridCoordinates(getPosition(), Presenter.CoordinateConversionFunction.FLOOR)
-            if (gridPosition.x + piece.size == presenter.grid.width) {
+            if (gridPosition.x + piece.size == presenter.grid!!.width) {
                 presenter.win()
             }
         }

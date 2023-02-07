@@ -3,7 +3,6 @@ package com.inf8405.tp1.presenter
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Action
-import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction
 import com.badlogic.gdx.utils.XmlReader
@@ -11,28 +10,35 @@ import com.inf8405.tp1.model.GameGrid
 import com.inf8405.tp1.model.GamePiece
 import com.inf8405.tp1.model.Orientation
 import com.inf8405.tp1.model.utils.Vector
+import com.inf8405.tp1.view.GameView
 import com.inf8405.tp1.view.PieceActor
 import kotlin.math.*
 
-class Presenter(private val stage: Stage) {
+class Presenter {
     var grid: GameGrid? = null
+
+    var gameView: GameView? = null
 
     private var mainPieceActor: PieceActor? = null
     private var selectedPieceActor: PieceActor? = null
     private var dragStartPosition: Vector2? = null
 
+    var updateUI: ((count: Int) -> Unit) = { _ -> }
+
     var active: Boolean = true
     var moves = 0
+        set(value) {
+            updateUI(value)
+            field = value
+        }
 
     init {
-        loadLevel(1)
+        gameView = GameView(this)
     }
 
     fun loadLevel(level: Int = 1) {
         // Cleanup stage before loading new level
-        for (actor in stage.actors) {
-            actor.remove()
-        }
+        gameView!!.stage!!.actors.clear()
 
         grid = GameGrid()
         active = true
@@ -46,19 +52,20 @@ class Presenter(private val stage: Stage) {
         for (piece in pieces) {
             addPiece(GamePiece.fromXmlElement(piece))
         }
+        grid!!.print()
     }
 
     private fun addPiece(piece: GamePiece): PieceActor {
         grid!!.addPiece(piece)
 
         val pieceActor = PieceActor(this, piece)
-        stage.addActor(pieceActor)
+        gameView!!.stage!!.addActor(pieceActor)
 
         return pieceActor
     }
 
     private fun getScale(): Vector2 {
-        return Vector2(stage.viewport.worldWidth / grid!!.width, stage.viewport.worldHeight / grid!!.height)
+        return Vector2(gameView!!.stage!!.viewport.worldWidth / grid!!.width, gameView!!.stage!!.viewport.worldHeight / grid!!.height)
     }
 
     fun toWorldCoordinates(gridCoordinates: Vector): Vector2 {

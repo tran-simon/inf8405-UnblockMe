@@ -8,15 +8,15 @@ import com.badlogic.gdx.utils.ScreenUtils
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.inf8405.tp1.presenter.Presenter
 
-class GameView : ApplicationAdapter() {
-    private var stage: Stage? = null
-    private var presenter: Presenter? = null
+class GameView(private var presenter: Presenter) : ApplicationAdapter() {
+    var stage: Stage? = null
     override fun create() {
         Gdx.app.logLevel = Application.LOG_DEBUG // TODO: Remove
         stage = Stage(FitViewport(400f, 400f))
-        presenter = Presenter(stage!!)
 
         Gdx.input.inputProcessor = stage
+
+        presenter.loadLevel(1)
     }
 
     override fun render() {
@@ -28,9 +28,5 @@ class GameView : ApplicationAdapter() {
 
     override fun dispose() {
         stage!!.dispose()
-    }
-
-    fun loadLevel(level: Int) {
-        presenter!!.loadLevel(level)
     }
 }

@@ -33,7 +33,7 @@ class PieceActor(presenter: Presenter, val piece: GamePiece) : Actor() {
 
             override fun dragStop(event: InputEvent?, x: Float, y: Float, pointer: Int) {
                 super.dragStop(event, x, y, pointer)
-                presenter.unselectPieceActor()
+                presenter.unselectPieceActor(this@PieceActor)
             }
 
             override fun drag(event: InputEvent?, x: Float, y: Float, pointer: Int) {

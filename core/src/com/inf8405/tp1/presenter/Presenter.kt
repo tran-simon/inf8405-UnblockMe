@@ -1,6 +1,5 @@
 package com.inf8405.tp1.presenter
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.inf8405.tp1.model.GameGrid
@@ -39,29 +38,36 @@ class Presenter(private val stage: Stage) {
     }
 
     fun selectPieceActor(pieceActor: PieceActor, touchPosition: Vector2) {
+        if(selectedPieceActor != null) return
+
         grid.removePiece(pieceActor.piece)
         selectedPieceActor = pieceActor
         dragStartPosition = touchPosition
     }
 
-    fun unselectPieceActor() {
+    fun unselectPieceActor(pieceActor: PieceActor) {
+        if (pieceActor != selectedPieceActor) return
+
         grid.addPiece(selectedPieceActor!!.piece)
         selectedPieceActor = null
         dragStartPosition = null
     }
 
     fun movePieceActor(pieceActor: PieceActor, touchPosition: Vector2) {
-        val delta = touchPosition.sub(dragStartPosition)
-        Gdx.app.debug("Unblockme", "MOVE $delta")
+        if (pieceActor != selectedPieceActor) return
 
-        val scalarDelta = if (pieceActor.piece.orientation == Orientation.HORIZONTAL) delta.x else delta.y
+        val delta = touchPosition.sub(dragStartPosition)
+        if (pieceActor.piece.orientation == Orientation.HORIZONTAL) {
+            delta.y = 0f
+        } else {
+            delta.x = 0f
+        }
+
+        val currentPosition = Vector2(pieceActor.x, pieceActor.y)
+        val futurePosition = currentPosition.add(delta)
 
         // TODO: Check bounds
 
-        if (pieceActor.piece.orientation == Orientation.HORIZONTAL) {
-            pieceActor.moveBy(scalarDelta, 0f)
-        } else {
-            pieceActor.moveBy(0f, scalarDelta)
-        }
+        pieceActor.setPosition(futurePosition.x, futurePosition.y)
     }
 }

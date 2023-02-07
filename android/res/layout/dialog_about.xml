@@ -1,0 +1,66 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:gravity="center"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:contentDescription="@string/app_name"
+        android:gravity="center"
+        android:scaleType="center"
+        android:src="@drawable/logo_header" />
+    <TextView
+        android:id="@+id/Team"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:text="@string/team"
+        android:textAlignment="center"
+        android:textColor="@android:color/black"
+        android:textSize="34sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/Student1"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:gravity="center"
+        android:text="@string/pritam"
+        android:textAlignment="center"
+        android:textColor="@android:color/black"
+        android:textSize="34sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/Student2"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:textColor="@android:color/black"
+        android:layout_height="100dp"
+        android:text="@string/batikan"
+        android:textSize="34sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/Student3"
+        android:layout_height="100dp"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:textColor="@android:color/black"
+        android:text="@string/imad"
+        android:textSize="34sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/Student4"
+        android:layout_height="100dp"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:text="@string/simon"
+        android:textSize="34sp"
+        android:textColor="@android:color/black"
+        android:textStyle="bold" />
+
+</LinearLayout>

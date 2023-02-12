@@ -1,17 +1,20 @@
 package com.inf8405.tp1
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.constraint.ConstraintLayout
-import android.widget.Button
+import android.view.View
+import android.widget.ImageButton
 import android.widget.TextView
 import com.badlogic.gdx.backends.android.AndroidApplication
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration
 import com.inf8405.tp1.presenter.Presenter
 
+
 class AndroidLauncher : AndroidApplication() {
     private var gamePresenter = Presenter()
-    private var prevLevelBtn: Button? = null
-    private var nextLevelBtn: Button? = null
+    private var prevLevelBtn: ImageButton? = null
+    private var nextLevelBtn: ImageButton? = null
     private var currentPuzzleTextView: TextView? = null
     private var movesCountTextView: TextView? = null
 
@@ -52,5 +55,9 @@ class AndroidLauncher : AndroidApplication() {
         nextLevelBtn!!.isEnabled = level < 3
         currentPuzzleTextView!!.text = level.toString()
         movesCountTextView!!.text = gamePresenter.moves.toString()
+    }
+
+    fun navigateToMenu(view: View) {
+        startActivity(Intent(this, MainActivity::class.java))
     }
 }

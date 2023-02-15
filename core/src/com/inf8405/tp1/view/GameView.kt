@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.ScreenUtils
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.inf8405.tp1.presenter.Presenter
 
+
 class GameView(private var presenter: Presenter) : ApplicationAdapter() {
     var stage: Stage? = null
     var assetManager: AssetManager? = null

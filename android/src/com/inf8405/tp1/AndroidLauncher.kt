@@ -4,7 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.support.constraint.ConstraintLayout
+import android.support.v7.app.AlertDialog
 import android.view.View
 import android.widget.ImageButton
 import android.widget.TextView
@@ -19,6 +22,7 @@ class AndroidLauncher : AndroidApplication(), Launcher {
     private var prevLevelBtn: ImageButton? = null
     private var nextLevelBtn: ImageButton? = null
     private var revertBtn: ImageButton? = null
+    private var resetBtn: ImageButton? = null
     private var currentPuzzleTextView: TextView? = null
     private var movesCountTextView: TextView? = null
     private var recordTextView: TextView? = null
@@ -41,6 +45,7 @@ class AndroidLauncher : AndroidApplication(), Launcher {
         prevLevelBtn = findViewById(R.id.button_prevPuzzle)
         nextLevelBtn = findViewById(R.id.button_nextPuzzle)
         revertBtn = findViewById(R.id.button_revert)
+        resetBtn = findViewById(R.id.button_reset)
 
         prevLevelBtn!!.setOnClickListener {
             gamePresenter.loadLevel(--gamePresenter.level)
@@ -67,6 +72,29 @@ class AndroidLauncher : AndroidApplication(), Launcher {
         updateUI()
     }
 
+    private fun createWinDialog() {
+        val level = gamePresenter.level
+
+        val dialogBuilder = AlertDialog.Builder(this)
+        dialogBuilder.setTitle("Puzzle Solved!")
+        dialogBuilder.setMessage(String.format(getString(R.string.msg_win), gamePresenter.moves.size))
+
+        runOnUiThread {
+            val dialog = dialogBuilder.create()
+
+            // Auto-hide the dialog after 3 seconds and go to next level
+            Handler(Looper.getMainLooper()).postDelayed({
+                dialog.dismiss()
+
+                if (level != 3) {
+                    gamePresenter.loadLevel(level + 1)
+                }
+            }, 3000)
+
+            dialog.show()
+        }
+    }
+
     private fun getSavedScore(): Int {
         val level = gamePresenter.level
         return recordsSharedPreferences!!.getInt("level$level", -1)
@@ -74,9 +102,15 @@ class AndroidLauncher : AndroidApplication(), Launcher {
 
     private fun updateUIInternal() {
         val level = gamePresenter.level
-        prevLevelBtn!!.isEnabled = level > 1
-        nextLevelBtn!!.isEnabled = level < 3
+        prevLevelBtn!!.visibility = if (level > 1) View.VISIBLE else View.INVISIBLE
+        nextLevelBtn!!.visibility = if (level < 3) View.VISIBLE else View.INVISIBLE
+
         revertBtn!!.isEnabled = gamePresenter.moves.isNotEmpty()
+        revertBtn!!.imageAlpha = if (revertBtn!!.isEnabled) 255 else 150
+
+        resetBtn!!.isEnabled = gamePresenter.moves.isNotEmpty()
+        resetBtn!!.imageAlpha = if (resetBtn!!.isEnabled) 255 else 150
+
         currentPuzzleTextView!!.text = level.toString()
         movesCountTextView!!.text = gamePresenter.moves.size.toString()
 
@@ -102,7 +136,6 @@ class AndroidLauncher : AndroidApplication(), Launcher {
             editor.apply()
         }
 
-        gamePresenter.loadLevel(if (level == 3) 1 else level + 1)
-
+        createWinDialog()
     }
 }

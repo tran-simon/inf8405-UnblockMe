@@ -54,7 +54,6 @@ class Presenter(val launcher: Launcher) {
         mainPieceActor = addPiece(GamePiece.createMain())
         selectedPieceActor = null
 
-        // TODO: Add more levels
         val xml = XmlReader()
         val xmlRoot = xml.parse(Gdx.files.internal("level$level.xml"))
         val pieces = xmlRoot.getChildrenByName("piece")

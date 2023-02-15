@@ -87,7 +87,6 @@
                 android:layout_width="56dp"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
-                android:contentDescription="TODO"
                 android:enabled="false"
                 android:src="@drawable/outline_arrow_circle_left_24" />
 
@@ -123,7 +122,6 @@
                 android:layout_width="56dp"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
-                android:contentDescription="TODO"
                 android:enabled="false"
                 android:src="@drawable/outline_arrow_circle_right_24" />
 

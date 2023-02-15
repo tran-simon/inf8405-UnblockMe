@@ -60,4 +60,13 @@ class AndroidLauncher : AndroidApplication() {
     fun navigateToMenu(view: View) {
         startActivity(Intent(this, MainActivity::class.java))
     }
+
+    fun undo(view: View){
+        // TODO
+    }
+
+    fun reset(view: View) {
+        gamePresenter.loadLevel(level)
+        updateUI()
+    }
 }

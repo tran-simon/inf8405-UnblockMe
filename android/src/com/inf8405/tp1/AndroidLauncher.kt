@@ -15,6 +15,7 @@ class AndroidLauncher : AndroidApplication() {
     private var gamePresenter = Presenter()
     private var prevLevelBtn: ImageButton? = null
     private var nextLevelBtn: ImageButton? = null
+    private var revertBtn: ImageButton? = null
     private var currentPuzzleTextView: TextView? = null
     private var movesCountTextView: TextView? = null
 
@@ -32,6 +33,7 @@ class AndroidLauncher : AndroidApplication() {
         currentPuzzleTextView = findViewById(R.id.textView_currentPuzzle)
         prevLevelBtn = findViewById(R.id.button_prevPuzzle)
         nextLevelBtn = findViewById(R.id.button_nextPuzzle)
+        revertBtn = findViewById(R.id.button_revert)
 
         prevLevelBtn!!.setOnClickListener {
             gamePresenter.loadLevel(--level)
@@ -43,7 +45,12 @@ class AndroidLauncher : AndroidApplication() {
             updateUI()
         }
 
-        gamePresenter.updateUI = { _ ->
+        revertBtn!!.setOnClickListener {
+            gamePresenter.undoMove()
+            updateUI()
+        }
+
+        gamePresenter.updateUI = {
             runOnUiThread() {
                 updateUI()
             }
@@ -53,16 +60,13 @@ class AndroidLauncher : AndroidApplication() {
     private fun updateUI() {
         prevLevelBtn!!.isEnabled = level > 1
         nextLevelBtn!!.isEnabled = level < 3
+        revertBtn!!.isEnabled = gamePresenter.moves.isNotEmpty()
         currentPuzzleTextView!!.text = level.toString()
-        movesCountTextView!!.text = gamePresenter.moves.toString()
+        movesCountTextView!!.text = gamePresenter.moves.size.toString()
     }
 
     fun navigateToMenu(view: View) {
         startActivity(Intent(this, MainActivity::class.java))
-    }
-
-    fun undo(view: View){
-        // TODO
     }
 
     fun reset(view: View) {

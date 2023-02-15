@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction
 import com.badlogic.gdx.utils.XmlReader
 import com.inf8405.tp1.model.GameGrid
 import com.inf8405.tp1.model.GamePiece
+import com.inf8405.tp1.model.Move
 import com.inf8405.tp1.model.Orientation
 import com.inf8405.tp1.model.utils.Vector
 import com.inf8405.tp1.view.GameView
@@ -23,14 +24,11 @@ class Presenter {
     private var selectedPieceActor: PieceActor? = null
     private var dragStartPosition: Vector2? = null
 
-    var updateUI: ((count: Int) -> Unit) = { _ -> }
+    var updateUI: (() -> Unit) = { }
 
     var active: Boolean = true
-    var moves = 0
-        set(value) {
-            updateUI(value)
-            field = value
-        }
+
+    var moves = arrayListOf<Move>()
 
     init {
         gameView = GameView(this)
@@ -42,7 +40,7 @@ class Presenter {
 
         grid = GameGrid()
         active = true
-        moves = 0
+        moves.clear()
         mainPieceActor = addPiece(GamePiece.createMain())
 
         // TODO: Add more levels
@@ -108,14 +106,28 @@ class Presenter {
         pieceActor.setPosition(worldCoordinates.x, worldCoordinates.y)
 
         if (gridCoordinates != pieceActor.piece.position) {
-            moves++
+            val move = Move(pieceActor, pieceActor.piece.position)
+            moves.add(move)
             pieceActor.piece.position = gridCoordinates
+            updateUI()
         }
 
         grid!!.addPiece(pieceActor.piece)
 
         selectedPieceActor = null
         dragStartPosition = null
+    }
+
+    fun undoMove() {
+        val move = moves.removeLastOrNull() ?: return
+
+        val (pieceActor, previousGridPosition) = move
+        grid!!.removePiece(pieceActor.piece)
+
+        val worldCoordinates = toWorldCoordinates(previousGridPosition)
+        pieceActor.setPosition(worldCoordinates.x, worldCoordinates.y)
+        pieceActor.piece.position = previousGridPosition
+        grid!!.addPiece(pieceActor.piece)
     }
 
     fun movePieceActor(pieceActor: PieceActor, touchPosition: Vector2) {

@@ -12,5 +12,6 @@
     <string name="batikan">Batikan Iscan - 1955204</string>
     <string name="imad">Imad Berrahil - 2169358</string>
     <string name="simon">Simon Tran - 1961278</string>
+    <string name="record">%1$s/%2$s</string>
 
 </resources>

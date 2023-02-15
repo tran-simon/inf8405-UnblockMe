@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.Action
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction
 import com.badlogic.gdx.utils.XmlReader
+import com.inf8405.tp1.interfaces.Launcher
 import com.inf8405.tp1.model.GameGrid
 import com.inf8405.tp1.model.GamePiece
 import com.inf8405.tp1.model.Move
@@ -15,7 +16,7 @@ import com.inf8405.tp1.view.GameView
 import com.inf8405.tp1.view.PieceActor
 import kotlin.math.*
 
-class Presenter {
+class Presenter(val launcher: Launcher) {
     var grid: GameGrid? = null
 
     var gameView: GameView? = null
@@ -24,17 +25,20 @@ class Presenter {
     private var selectedPieceActor: PieceActor? = null
     private var dragStartPosition: Vector2? = null
 
-    var updateUI: (() -> Unit) = { }
-
     var active: Boolean = true
 
     var moves = arrayListOf<Move>()
+
+    var bestScore: String? = null
+
+    var level = 0
 
     init {
         gameView = GameView(this)
     }
 
     fun loadLevel(level: Int = 1) {
+        this.level = level
         // Cleanup stage before loading new level
         gameView!!.stage!!.actors.clear()
 
@@ -42,6 +46,7 @@ class Presenter {
         active = true
         moves.clear()
         mainPieceActor = addPiece(GamePiece.createMain())
+        selectedPieceActor = null
 
         // TODO: Add more levels
         val xml = XmlReader()
@@ -50,7 +55,9 @@ class Presenter {
         for (piece in pieces) {
             addPiece(GamePiece.fromXmlElement(piece))
         }
-        grid!!.print()
+        bestScore = xmlRoot.getAttribute("best-score")
+
+        launcher.updateUI()
     }
 
     private fun addPiece(piece: GamePiece): PieceActor {
@@ -109,7 +116,7 @@ class Presenter {
             val move = Move(pieceActor, pieceActor.piece.position)
             moves.add(move)
             pieceActor.piece.position = gridCoordinates
-            updateUI()
+            launcher.updateUI()
         }
 
         grid!!.addPiece(pieceActor.piece)
@@ -183,6 +190,10 @@ class Presenter {
     fun win() {
         if (!active) return
 
+        val move = Move(mainPieceActor!!, mainPieceActor!!.piece.position)
+        moves.add(move)
+        launcher.updateUI()
+
         active = false
 
         val moveAction = MoveToAction()
@@ -192,8 +203,7 @@ class Presenter {
 
         val completeAction: Action = object : Action() {
             override fun act(delta: Float): Boolean {
-                // TODO: Move to next puzzle
-                Gdx.app.debug("UnblockMe", "Won")
+                launcher.win()
                 return true
             }
         }

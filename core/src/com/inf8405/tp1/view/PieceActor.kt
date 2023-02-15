@@ -13,11 +13,8 @@ import com.inf8405.tp1.presenter.Presenter
 
 
 class PieceActor(val presenter: Presenter, val piece: GamePiece) : Actor() {
-    private var img: Texture? = null
-
+    private val textureName = if (piece.isMain) "boat_main.png" else if(piece.size == 2) "boat_small.png" else "boat_large.png"
     init {
-        img = Texture("badlogic.jpg")
-
         val position = presenter.toWorldCoordinates(piece.position)
         val vectorSize = if (piece.orientation == Orientation.HORIZONTAL) Vector(piece.size, 1) else Vector(1, piece.size)
         val size = presenter.toWorldCoordinates(vectorSize)
@@ -45,7 +42,15 @@ class PieceActor(val presenter: Presenter, val piece: GamePiece) : Actor() {
 
     override fun draw(batch: Batch?, parentAlpha: Float) {
         super.draw(batch, parentAlpha)
-        batch!!.draw(img, x, y, width, height)
+        val img = presenter.gameView!!.assetManager!!.get<Texture>(textureName)
+
+        if (piece.orientation == Orientation.HORIZONTAL) {
+            batch!!.draw(img, x, y, width, height)
+        } else {
+            val srcWidth = if(piece.size == 2) 500 else 600
+            val srcHeight = if(piece.size == 2) 250 else 200
+            batch!!.draw(img, x, y, 0f, 0f, height, width, 1f, -1f, 90f, 0, 0, srcWidth, srcHeight, false, true)
+        }
     }
 
     override fun act(delta: Float) {

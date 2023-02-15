@@ -3,8 +3,10 @@ package com.inf8405.tp1.presenter
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Action
+import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction
+import com.badlogic.gdx.utils.SnapshotArray
 import com.badlogic.gdx.utils.XmlReader
 import com.inf8405.tp1.interfaces.Launcher
 import com.inf8405.tp1.model.GameGrid
@@ -39,8 +41,12 @@ class Presenter(val launcher: Launcher) {
 
     fun loadLevel(level: Int = 1) {
         this.level = level
+
         // Cleanup stage before loading new level
-        gameView!!.stage!!.actors.clear()
+        val actors = SnapshotArray<Actor>(gameView!!.stage!!.actors)
+        for (actor in actors) {
+            actor.remove()
+        }
 
         grid = GameGrid()
         active = true

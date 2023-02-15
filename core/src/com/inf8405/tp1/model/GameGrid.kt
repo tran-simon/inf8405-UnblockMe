@@ -1,6 +1,5 @@
 package com.inf8405.tp1.model
 
-import com.badlogic.gdx.Gdx
 import com.inf8405.tp1.model.utils.Grid
 import com.inf8405.tp1.model.utils.GridBoundsException
 import com.inf8405.tp1.model.utils.Vector
@@ -61,9 +60,5 @@ class GameGrid(val width: Int = DEFAULT_GRID_WIDTH, val height: Int = DEFAULT_GR
         for (point in points) {
             setAt(point, null)
         }
-    }
-
-    fun print() {
-        Gdx.app.debug("UnblockMe", toString())
     }
 }

@@ -1,6 +1,7 @@
 package com.inf8405.tp1
 
 import android.app.Dialog
+import android.app.PendingIntent.getActivity
 import android.content.DialogInterface
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
@@ -26,8 +27,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun exitGame(view: View) {
-        finish();
-        exitProcess(0);
+        this.finishAffinity();
     }
 }
 

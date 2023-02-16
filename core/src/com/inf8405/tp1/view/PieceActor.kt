@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener
 import com.inf8405.tp1.model.GamePiece
 import com.inf8405.tp1.model.Orientation
@@ -14,6 +15,8 @@ import com.inf8405.tp1.presenter.Presenter
 
 class PieceActor(val presenter: Presenter, val piece: GamePiece) : Actor() {
     private val textureName = if (piece.isMain) "boat_main.png" else if(piece.size == 2) "boat_small.png" else "boat_large.png"
+
+    var selected = false
     init {
         val position = presenter.toWorldCoordinates(piece.position)
         val vectorSize = if (piece.orientation == Orientation.HORIZONTAL) Vector(piece.size, 1) else Vector(1, piece.size)
@@ -22,15 +25,25 @@ class PieceActor(val presenter: Presenter, val piece: GamePiece) : Actor() {
         setPosition(position.x, position.y)
         setSize(size.x, size.y)
 
+        addListener(object : ClickListener() {
+            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                presenter.selectPieceActor(this@PieceActor, Vector2(x, y))
+                return super.touchDown(event, x, y, pointer, button)
+            }
+
+            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                super.touchUp(event, x, y, pointer, button)
+                presenter.unselectPieceActor(this@PieceActor)
+            }
+        })
+
         addListener(object : DragListener() {
             override fun dragStart(event: InputEvent?, x: Float, y: Float, pointer: Int) {
                 super.dragStart(event, x, y, pointer)
-                presenter.selectPieceActor(this@PieceActor, Vector2(x, y))
             }
 
             override fun dragStop(event: InputEvent?, x: Float, y: Float, pointer: Int) {
                 super.dragStop(event, x, y, pointer)
-                presenter.unselectPieceActor(this@PieceActor)
             }
 
             override fun drag(event: InputEvent?, x: Float, y: Float, pointer: Int) {

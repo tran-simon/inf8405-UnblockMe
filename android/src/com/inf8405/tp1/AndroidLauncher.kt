@@ -3,6 +3,7 @@ package com.inf8405.tp1
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -28,9 +29,12 @@ class AndroidLauncher : AndroidApplication(), Launcher {
     private var recordTextView: TextView? = null
 
     private var recordsSharedPreferences: SharedPreferences? = null
+    private var mediaPlayer: MediaPlayer? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
+        mediaPlayer = MediaPlayer.create(this, R.raw.sound_win)
 
         val config = AndroidApplicationConfiguration()
 
@@ -136,6 +140,12 @@ class AndroidLauncher : AndroidApplication(), Launcher {
             editor.apply()
         }
 
+        mediaPlayer!!.start()
         createWinDialog()
+    }
+
+    override fun onDestroy() {
+        mediaPlayer?.release()
+        super.onDestroy()
     }
 }

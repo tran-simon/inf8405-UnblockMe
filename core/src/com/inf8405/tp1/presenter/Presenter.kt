@@ -105,6 +105,7 @@ class Presenter(val launcher: Launcher) {
         if (selectedPieceActor != null) return
 
         grid!!.removePiece(pieceActor.piece)
+        pieceActor.selected = true
         selectedPieceActor = pieceActor
         dragStartPosition = touchPosition
     }
@@ -116,6 +117,7 @@ class Presenter(val launcher: Launcher) {
         val gridCoordinates = toGridCoordinates(pieceActor.getPosition())
         val worldCoordinates = toWorldCoordinates(gridCoordinates)
         pieceActor.setPosition(worldCoordinates.x, worldCoordinates.y)
+        pieceActor.selected = false
 
         if (gridCoordinates != pieceActor.piece.position) {
             val move = Move(pieceActor, pieceActor.piece.position)

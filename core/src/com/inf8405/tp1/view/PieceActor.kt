@@ -12,11 +12,14 @@ import com.inf8405.tp1.model.Orientation
 import com.inf8405.tp1.model.utils.Vector
 import com.inf8405.tp1.presenter.Presenter
 
-
+/**
+ * The actor used to display a piece on the board
+ */
 class PieceActor(val presenter: Presenter, val piece: GamePiece) : Actor() {
-    private val textureName = if (piece.isMain) "boat_main.png" else if(piece.size == 2) "boat_small.png" else "boat_large.png"
+    private val textureName = if (piece.isMain) "boat_main.png" else if (piece.size == 2) "boat_small.png" else "boat_large.png"
 
     var selected = false
+
     init {
         val position = presenter.toWorldCoordinates(piece.position)
         val vectorSize = if (piece.orientation == Orientation.HORIZONTAL) Vector(piece.size, 1) else Vector(1, piece.size)
@@ -24,6 +27,9 @@ class PieceActor(val presenter: Presenter, val piece: GamePiece) : Actor() {
 
         setPosition(position.x, position.y)
         setSize(size.x, size.y)
+
+
+        /* Initialize listeners */
 
         addListener(object : ClickListener() {
             override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
@@ -53,6 +59,9 @@ class PieceActor(val presenter: Presenter, val piece: GamePiece) : Actor() {
         })
     }
 
+    /**
+     * Draw the piece depending on its orientation and type
+     */
     override fun draw(batch: Batch?, parentAlpha: Float) {
         super.draw(batch, parentAlpha)
         val img = presenter.gameView!!.assetManager!!.get<Texture>(textureName)
@@ -60,12 +69,15 @@ class PieceActor(val presenter: Presenter, val piece: GamePiece) : Actor() {
         if (piece.orientation == Orientation.HORIZONTAL) {
             batch!!.draw(img, x, y, width, height)
         } else {
-            val srcWidth = if(piece.size == 2) 500 else 600
-            val srcHeight = if(piece.size == 2) 250 else 200
+            val srcWidth = if (piece.size == 2) 500 else 600
+            val srcHeight = if (piece.size == 2) 250 else 200
             batch!!.draw(img, x, y, 0f, 0f, height, width, 1f, -1f, 90f, 0, 0, srcWidth, srcHeight, false, true)
         }
     }
 
+    /**
+     * Check if the piece has reached the hole
+     */
     override fun act(delta: Float) {
         super.act(delta)
         if (piece.isMain && presenter.active) {

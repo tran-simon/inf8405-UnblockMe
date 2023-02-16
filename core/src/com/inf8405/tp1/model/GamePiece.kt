@@ -16,10 +16,16 @@ enum class Orientation {
  */
 data class GamePiece(var position: Vector, val size: Int, val orientation: Orientation = Orientation.HORIZONTAL, val isMain: Boolean = false) {
     companion object {
+        /**
+         * Create the main piece
+         */
         fun createMain(): GamePiece {
             return GamePiece(Vector(0, 3), 2, Orientation.HORIZONTAL, true)
         }
 
+        /**
+         * Create a GamePiece from an xml element from the level assets
+         */
         fun fromXmlElement(element: XmlReader.Element): GamePiece {
             val position = Vector(element.getAttribute("x").toInt(), element.getAttribute("y").toInt())
             val size = element.getAttribute("size").toInt()

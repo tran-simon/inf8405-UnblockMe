@@ -1,7 +1,6 @@
 package com.inf8405.tp1
 
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -17,7 +16,9 @@ import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration
 import com.inf8405.tp1.interfaces.Launcher
 import com.inf8405.tp1.presenter.Presenter
 
-
+/**
+ * The game LibGDX launcher.
+ */
 class AndroidLauncher : AndroidApplication(), Launcher {
     private var gamePresenter = Presenter(this)
     private var prevLevelBtn: ImageButton? = null
@@ -31,6 +32,9 @@ class AndroidLauncher : AndroidApplication(), Launcher {
     private var recordsSharedPreferences: SharedPreferences? = null
     private var mediaPlayer: MediaPlayer? = null
 
+    /**
+     * Initialize the AndroidLauncher
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
@@ -51,6 +55,9 @@ class AndroidLauncher : AndroidApplication(), Launcher {
         revertBtn = findViewById(R.id.button_revert)
         resetBtn = findViewById(R.id.button_reset)
 
+
+        /* Button click listeners*/
+
         prevLevelBtn!!.setOnClickListener {
             gamePresenter.loadLevel(--gamePresenter.level)
             updateUI()
@@ -67,18 +74,34 @@ class AndroidLauncher : AndroidApplication(), Launcher {
         }
     }
 
+    /**
+     * Called when the menu button is pressed.
+     *
+     * This redirects to the main menu
+     */
     fun navigateToMenu(view: View) {
-        startActivity(Intent(this, MainActivity::class.java))
+        finish()
     }
 
+    /**
+     * Called when the reset button is pressed.
+     *
+     * This reloads the current level
+     */
     fun reset(view: View) {
         gamePresenter.loadLevel(gamePresenter.level)
         updateUI()
     }
 
+    /**
+     * Creates and opens the dialog when the user has completed a puzzle.
+     *
+     * The dialog will automatically hide after 3 seconds and launch the next puzzle (if it exists).
+     */
     private fun createWinDialog() {
         val level = gamePresenter.level
 
+        /* Create the Dialog */
         val dialogBuilder = AlertDialog.Builder(this)
         dialogBuilder.setTitle("Puzzle Solved!")
         dialogBuilder.setMessage(String.format(getString(R.string.msg_win), gamePresenter.moves.size))
@@ -86,7 +109,7 @@ class AndroidLauncher : AndroidApplication(), Launcher {
         runOnUiThread {
             val dialog = dialogBuilder.create()
 
-            // Auto-hide the dialog after 3 seconds and go to next level
+            /* Auto-hide the dialog after 3 seconds and go to next level */
             Handler(Looper.getMainLooper()).postDelayed({
                 dialog.dismiss()
 
@@ -99,11 +122,17 @@ class AndroidLauncher : AndroidApplication(), Launcher {
         }
     }
 
+    /**
+     * Get the saved high score. -1 if the user never completed the puzzle.
+     */
     private fun getSavedScore(): Int {
         val level = gamePresenter.level
         return recordsSharedPreferences!!.getInt("level$level", -1)
     }
 
+    /**
+     * Update the UI with the current values from the GamePresenter
+     */
     private fun updateUIInternal() {
         val level = gamePresenter.level
         prevLevelBtn!!.visibility = if (level > 1) View.VISIBLE else View.INVISIBLE
@@ -123,12 +152,20 @@ class AndroidLauncher : AndroidApplication(), Launcher {
         recordTextView!!.text = String.format(getString(R.string.record), textScore, gamePresenter.bestScore)
     }
 
+    /**
+     * Called by the GamePresenter if the UI needs to be updated
+     */
     override fun updateUI() {
         runOnUiThread {
             updateUIInternal()
         }
     }
 
+    /**
+     * Called when the user has completed a puzzle.
+     *
+     * This updates the high score if necessary, plays the win sound and opens the win dialog
+     */
     override fun win() {
         val level = gamePresenter.level
         val score = getSavedScore()
@@ -144,6 +181,11 @@ class AndroidLauncher : AndroidApplication(), Launcher {
         createWinDialog()
     }
 
+    /**
+     * Called when the application exits.
+     *
+     * This releases some assets to save resources
+     */
     override fun onDestroy() {
         mediaPlayer?.release()
         super.onDestroy()

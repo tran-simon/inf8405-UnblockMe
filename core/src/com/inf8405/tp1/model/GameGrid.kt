@@ -7,9 +7,17 @@ import com.inf8405.tp1.model.utils.Vector
 private const val DEFAULT_GRID_WIDTH = 6
 private const val DEFAULT_GRID_HEIGHT = 6
 
+/**
+ * The GameGrid.
+ *
+ * Contains all the pieces and the board
+ */
 class GameGrid(val width: Int = DEFAULT_GRID_WIDTH, val height: Int = DEFAULT_GRID_HEIGHT): Grid<GamePiece>(width, height) {
     private val pieces = arrayListOf<GamePiece>()
 
+    /**
+     * Get all the points occupied by a piece and if those points are free from other pieces
+     */
     fun getPointsForPiece(piece: GamePiece): Pair<ArrayList<Vector>, Boolean> {
         val points = arrayListOf<Vector>()
         var isFree = true
@@ -35,6 +43,11 @@ class GameGrid(val width: Int = DEFAULT_GRID_WIDTH, val height: Int = DEFAULT_GR
         return Pair(points, isFree)
     }
 
+    /**
+     * Add a piece on the board
+     *
+     * Throws an exception if it is impossible to add a piece because the points are not free
+     */
     fun addPiece(piece: GamePiece) {
         val (points, free) = getPointsForPiece(piece)
         if (!free) {
@@ -48,6 +61,11 @@ class GameGrid(val width: Int = DEFAULT_GRID_WIDTH, val height: Int = DEFAULT_GR
         pieces.add(piece)
     }
 
+    /**
+     * Remove a piece from the board.
+     *
+     * Throws an exception if the grid does not contain the piece
+     */
     fun removePiece(piece: GamePiece) {
         val didRemove = pieces.remove(piece)
 

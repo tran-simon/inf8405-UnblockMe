@@ -1,19 +1,31 @@
 package com.inf8405.tp1.model.utils
 
+/**
+ * A generic data grid
+ */
 open class Grid<T>(private val width: Int, private val height: Int) {
     private val grid = MutableList(height) { MutableList<T?>(width) { null } }
 
+    /**
+     * Check that the position is within the grid bounds. Else throw an exception.
+     */
     private fun checkBounds(position: Vector) {
         if (position.x < 0 || position.x >= width || position.y < 0 || position.y >= height) {
             throw GridBoundsException(width, height, position)
         }
     }
 
+    /**
+     * Set a piece at the position
+     */
     fun setAt(position: Vector, piece: T?) {
         checkBounds(position)
         grid[position.y][position.x] = piece
     }
 
+    /**
+     * Get the piece at the position
+     */
     fun getAt(position: Vector): T? {
         checkBounds(position)
         return grid[position.y][position.x]

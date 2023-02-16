@@ -10,7 +10,9 @@ import com.badlogic.gdx.utils.ScreenUtils
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.inf8405.tp1.presenter.Presenter
 
-
+/**
+ * The main game view
+ */
 class GameView(private var presenter: Presenter) : ApplicationAdapter() {
     var stage: Stage? = null
     var assetManager: AssetManager? = null
@@ -23,6 +25,7 @@ class GameView(private var presenter: Presenter) : ApplicationAdapter() {
         presenter.loadLevel(1)
 
 
+        /* Load assets */
         assetManager = AssetManager()
         assetManager!!.load("background.jpg", Texture::class.java)
         assetManager!!.load("boat_large.png", Texture::class.java)
@@ -43,7 +46,6 @@ class GameView(private var presenter: Presenter) : ApplicationAdapter() {
         ScreenUtils.clear(0f, 0f, 0f, 1f)
 
         if (assetManager!!.update()) {
-
             stage!!.act()
             drawBackground(stage!!.batch)
             stage!!.draw()

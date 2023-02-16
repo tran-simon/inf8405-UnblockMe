@@ -3,6 +3,10 @@ package com.inf8405.tp1.model.utils
 import com.badlogic.gdx.math.Vector2
 
 typealias ToIntFunction = (value: Float) -> Int
+
+/**
+ * Represents an object that contains integer values for X and Y
+ */
 data class Vector(val x: Int, val y: Int) {
     companion object {
         fun fromVector2(vector2: Vector2, toIntFunction: ToIntFunction): Vector {

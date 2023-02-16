@@ -18,6 +18,9 @@ import com.inf8405.tp1.view.GameView
 import com.inf8405.tp1.view.PieceActor
 import kotlin.math.*
 
+/**
+ * In the Model-View-Presenter pattern, this class is the presenter that will control what to display on the view based on the model
+ */
 class Presenter(val launcher: Launcher) {
     var grid: GameGrid? = null
 
@@ -39,21 +42,28 @@ class Presenter(val launcher: Launcher) {
         gameView = GameView(this)
     }
 
+    /**
+     * Load a new level.
+     *
+     * If the current level is passed as an argument, it will reset the current puzzle.
+     */
     fun loadLevel(level: Int = 1) {
         this.level = level
 
-        // Cleanup stage before loading new level
+        /* Cleanup stage before loading new level */
         val actors = SnapshotArray<Actor>(gameView!!.stage!!.actors)
         for (actor in actors) {
             actor.remove()
         }
 
+        /* Reinitialize game data */
         grid = GameGrid()
         active = true
         moves.clear()
         mainPieceActor = addPiece(GamePiece.createMain())
         selectedPieceActor = null
 
+        /* Load the new level */
         val xml = XmlReader()
         val xmlRoot = xml.parse(Gdx.files.internal("level$level.xml"))
         val pieces = xmlRoot.getChildrenByName("piece")
@@ -65,6 +75,11 @@ class Presenter(val launcher: Launcher) {
         launcher.updateUI()
     }
 
+    /**
+     * Add a new piece on the board.
+     *
+     * It will create a PieceActor for the piece
+     */
     private fun addPiece(piece: GamePiece): PieceActor {
         grid!!.addPiece(piece)
 
@@ -74,10 +89,16 @@ class Presenter(val launcher: Launcher) {
         return pieceActor
     }
 
+    /**
+     * Returns a vector describing the scale of the world (The world size divided by the grid size)
+     */
     private fun getScale(): Vector2 {
         return Vector2(gameView!!.stage!!.viewport.worldWidth / grid!!.width, gameView!!.stage!!.viewport.worldHeight / grid!!.height)
     }
 
+    /**
+     * Convert a grid coordinate to a world coordinate.
+     */
     fun toWorldCoordinates(gridCoordinates: Vector): Vector2 {
         return gridCoordinates.toVector2().scl(getScale())
     }
@@ -86,6 +107,11 @@ class Presenter(val launcher: Launcher) {
         FLOOR, CEIL, ROUND
     }
 
+    /**
+     * Convert a world coordinate to a grid coordinate
+     *
+     * The `coordinateConversationFunction` can be used to chose how to round the float values.
+     */
     fun toGridCoordinates(
         worldCoordinates: Vector2,
         coordinateConversionFunction: CoordinateConversionFunction = CoordinateConversionFunction.ROUND
@@ -100,6 +126,9 @@ class Presenter(val launcher: Launcher) {
         }
     }
 
+    /**
+     * Called when a user presses on a piece to select it
+     */
     fun selectPieceActor(pieceActor: PieceActor, touchPosition: Vector2) {
         if (!active) return
         if (selectedPieceActor != null) return
@@ -110,6 +139,9 @@ class Presenter(val launcher: Launcher) {
         dragStartPosition = touchPosition
     }
 
+    /**
+     * Called when the user stops pressing the piece
+     */
     fun unselectPieceActor(pieceActor: PieceActor) {
         if (!active) return
         if (pieceActor != selectedPieceActor) return
@@ -119,6 +151,7 @@ class Presenter(val launcher: Launcher) {
         pieceActor.setPosition(worldCoordinates.x, worldCoordinates.y)
         pieceActor.selected = false
 
+        /* If the piece moved, add a move object to the stack */
         if (gridCoordinates != pieceActor.piece.position) {
             val move = Move(pieceActor, pieceActor.piece.position)
             moves.add(move)
@@ -132,6 +165,11 @@ class Presenter(val launcher: Launcher) {
         dragStartPosition = null
     }
 
+    /**
+     * Used to undo a movement.
+     *
+     * It will pop the `moves` stack and place the last moved piece to its last position
+     */
     fun undoMove() {
         val move = moves.removeLastOrNull() ?: return
 
@@ -144,6 +182,9 @@ class Presenter(val launcher: Launcher) {
         grid!!.addPiece(pieceActor.piece)
     }
 
+    /**
+     * Used when the user drags the piece to move it.
+     */
     fun movePieceActor(pieceActor: PieceActor, touchPosition: Vector2) {
         if (!active) return
         if (pieceActor != selectedPieceActor) return
@@ -188,12 +229,17 @@ class Presenter(val launcher: Launcher) {
         if (isFree) {
             pieceActor.setPosition(futurePosition.x, futurePosition.y)
         } else {
-            // If the future grid position isn't free, snap the piece to the previous valid grid position
+            /* If the future grid position isn't free, snap the piece to the previous valid grid position */
             val gridPosition = toGridCoordinates(worldPosition, coordinateConversionFunction)
             pieceActor.setPosition(toWorldCoordinates(gridPosition))
         }
     }
 
+    /**
+     * Called when the user dragged the main piece to the hole.
+     *
+     * It will start the winning animation, then call the `win` method of the launcher
+     */
     fun win() {
         if (!active) return
 

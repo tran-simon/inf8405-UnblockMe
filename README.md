@@ -4,6 +4,8 @@
 
 [DEMO](UnblockMe-INF8405.apk)
 
+[Lab report](INF8405_TP1_1933097_1955204_2169358_1961278.pdf)
+
 ## By
 
 1961278 - Simon Tran

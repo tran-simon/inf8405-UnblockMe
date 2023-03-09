@@ -6,9 +6,11 @@
 
 [Lab report](INF8405_TP1_1933097_1955204_2169358_1961278.pdf)
 
+![Screenshot_20230308-211500527](https://user-images.githubusercontent.com/8755930/223898473-49ed2512-5ade-4987-90b3-89ccc0c43e3c.jpg)
+
 ## By
 
-1961278 - Simon Tran
-1933097 - Pritam Patel
-1955204 - Batikan Iscan
-2169358 - Imad Berrahil
+* 1961278 - Simon Tran
+* 1933097 - Pritam Patel
+* 1955204 - Batikan Iscan
+* 2169358 - Imad Berrahil
